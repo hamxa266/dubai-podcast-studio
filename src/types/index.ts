@@ -42,31 +42,23 @@ export interface Studio {
   alt?: string;
 }
 
-/** An hourly service tier. */
-export interface Service {
-  id: string;
-  name: string;
-  /** AED per hour. */
-  rate: number;
-  minimumHours?: number;
-  summary: string;
-}
+/*
+  Service, Package and FaqItem used to be declared here as well. They were
+  written in Phase 2 as shapes for content that did not exist yet, and by the
+  time the data landed each had grown fields the real thing needed, so
+  src/data/pricing.ts and src/data/faq.ts declare their own. Nothing imported
+  the versions here.
 
-/** A prepaid block of hours. */
-export interface Package {
-  id: string;
-  name: string;
-  /** Total AED. */
-  price: number;
-  hours: number;
-  validMonths: number;
-  saving?: string;
-  featured?: boolean;
-}
+  They are deleted rather than left dormant, because two of the dead fields
+  were affordances this design deliberately refuses:
 
-export interface FaqItem {
-  id: string;
-  question: string;
-  answer: string;
-  group: "booking" | "studio" | "equipment" | "location";
-}
+    Package.featured?: boolean  ->  a "Most Popular" badge
+    Package.saving?:   string   ->  the "Save 100 AED/HR" label that does not
+                                    add up on the 10-hour editing block
+
+  See the note in src/data/pricing.ts. The UI shows the effective hourly rate
+  instead, and there is now no type field inviting either back.
+
+  The dead FaqItem had also drifted: its group union still said
+  "equipment" | "location" where the real groups are "gear" | "getting-here".
+*/

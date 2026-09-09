@@ -25,8 +25,17 @@ export function Hero() {
       <Container>
         <div className="grid gap-x-12 gap-y-9 lg:grid-cols-12">
           {/* enter-lcp, not enter: this is the LCP element, so it moves without
-              fading. See the note on .enter-lcp in globals.css. */}
-          <h1 className="enter-lcp text-hero text-balance text-ink lg:col-span-11">
+              fading. See the note on .enter-lcp in globals.css.
+
+              Spans all twelve columns. It used to stop at eleven, which read
+              as a deliberate ragged right but was really just 103px of column
+              plus a 48px gap that the headline needed at narrow desktop
+              widths: at 1024px it left an 876px measure for a line that wants
+              911px, and the headline broke onto three lines. The text is
+              balanced and shorter than the box at every width above that, so
+              the twelfth column costs nothing visually and buys the two-line
+              break where it is tight. */}
+          <h1 className="enter-lcp text-hero text-balance text-ink lg:col-span-12">
             {hero.headline}
           </h1>
 

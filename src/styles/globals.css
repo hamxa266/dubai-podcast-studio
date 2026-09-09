@@ -89,8 +89,18 @@
   /* Floor is 38px, not 44px. Measured at 390px: 44px wrapped the hero
      headline onto four lines, and a four-line hero headline is a
      font-size error rather than a copy-length one. 38px lands it on
-     three, which is the realistic mobile target. */
-  --text-hero: clamp(2.375rem, 0.75rem + 7vw, 5.5rem);
+     three, which is the realistic mobile target.
+
+     Ceiling is 80px, not 88px, and that is also measured rather than
+     chosen. The headline balances onto two lines whose widest measures
+     11.4 times the font size, so 88px needs 1002px of column and 80px
+     needs 911px. At 1024px wide the hero column is 960px: 88px ran the
+     headline onto three lines through the whole 1024 to 1180 band,
+     which is a font-size error by the same argument as the mobile
+     floor above. 80px clears it with room at every desktop width, and
+     nothing below 971px changes at all, because the clamp does not
+     reach the old ceiling until then. */
+  --text-hero: clamp(2.375rem, 0.75rem + 7vw, 5rem);
   --text-hero--line-height: 0.95;
   --text-hero--letter-spacing: -0.032em;
   --text-hero--font-weight: 400;
