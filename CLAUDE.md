@@ -33,8 +33,9 @@ The live site contradicts itself in several places, and those conflicts are
 recorded rather than quietly resolved.
 
 - `verified: false` and `needsVerification` in `src/data/` mark claims the
-  studio still has to confirm. There are 6 of them. Do not delete a flag
-  without an answer from the studio.
+  studio still has to confirm. There are 5 of them: one `verified: false` in
+  `site.ts`, one in `pricing.ts`, and three `needsVerification` notes in
+  `faq.ts`. Do not delete a flag without an answer from the studio.
 - Do not add a number, an inclusion, a testimonial or a client logo that the
   studio has not published.
 - Photographs are **not** attributed to individual rooms. Nothing in the

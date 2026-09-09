@@ -5,9 +5,9 @@ import { useEffect } from "react";
 /**
  * Smooth scroll, and the bridge between Lenis and GSAP ScrollTrigger.
  *
- * At MOTION_INTENSITY 9 the page uses pinned sections and scrubbed timelines.
- * Those need ScrollTrigger driven by the same clock as the smooth-scroll loop,
- * otherwise pinned content lags a frame behind and jitters.
+ * The hero parallax is a scrubbed ScrollTrigger, and a scrubbed timeline has
+ * to be driven by the same clock as the smooth-scroll loop. Without the bridge
+ * below, the scrubbed element lags a frame behind the scroll and jitters.
  *
  * WHY THE IMPORTS ARE DYNAMIC
  * ---------------------------

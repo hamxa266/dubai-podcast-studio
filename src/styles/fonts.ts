@@ -14,7 +14,7 @@ import localFont from "next/font/local";
  * These are preloaded: 400 sets the hero headline and 500 sets the navigation,
  * so both are needed for the first meaningful paint.
  */
-export const switzer = localFont({
+const switzer = localFont({
   src: [
     { path: "./fonts/Switzer-Regular.woff2", weight: "400", style: "normal" },
     { path: "./fonts/Switzer-Medium.woff2", weight: "500", style: "normal" },
@@ -40,7 +40,7 @@ export const switzer = localFont({
  * `display: swap` means the figures render immediately in the fallback and
  * swap when it arrives.
  */
-export const mono = localFont({
+const mono = localFont({
   src: [{ path: "./fonts/GeistMono-Regular.woff2", weight: "400", style: "normal" }],
   variable: "--font-geist-mono",
   display: "swap",

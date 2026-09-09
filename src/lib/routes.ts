@@ -31,8 +31,6 @@ export const routes = {
   contact: "/contact",
 } as const;
 
-export type RouteKey = keyof typeof routes;
-
 /**
  * Outbound links to systems we do not own and do not rebuild.
  *

@@ -27,14 +27,13 @@ export function Hero() {
           {/* enter-lcp, not enter: this is the LCP element, so it moves without
               fading. See the note on .enter-lcp in globals.css.
 
-              Spans all twelve columns. It used to stop at eleven, which read
-              as a deliberate ragged right but was really just 103px of column
-              plus a 48px gap that the headline needed at narrow desktop
-              widths: at 1024px it left an 876px measure for a line that wants
-              911px, and the headline broke onto three lines. The text is
-              balanced and shorter than the box at every width above that, so
-              the twelfth column costs nothing visually and buys the two-line
-              break where it is tight. */}
+              Spans all twelve columns. It stopped at eleven until the twelfth
+              was needed to keep the previous, much longer headline on two
+              lines at narrow desktop widths. The current headline no longer
+              needs the room, but the full span is kept: the text is balanced
+              and shorter than the box at every width, so the twelfth column
+              changes nothing visually, and it is what lets the headline sit on
+              a single line at 1440px and above. */}
           <h1 className="enter-lcp text-hero text-balance text-ink lg:col-span-12">
             {hero.headline}
           </h1>

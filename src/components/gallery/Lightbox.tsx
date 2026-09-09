@@ -26,8 +26,10 @@ interface LightboxProps {
  *   Tab         cycles inside the dialog only
  *
  * Focus moves to the close button on open and returns to whichever tile was
- * clicked on close, which the parent handles. The page behind is scroll-locked
- * and marked inert so neither a pointer nor the tab key can reach it.
+ * clicked on close, which the parent handles. The page behind is scroll-locked,
+ * and the dialog is aria-modal with an explicit Tab trap, so neither a pointer
+ * nor the tab key reaches it. The dialog unmounts entirely when closed, so
+ * there is nothing off-screen left in the tab order to mark inert.
  *
  * TOUCH
  *   A horizontal swipe of more than 50px moves between images. The arrow

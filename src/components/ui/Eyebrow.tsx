@@ -14,7 +14,7 @@ interface EyebrowProps {
  *
  * RATIONED. Taste-skill allows at most ceil(sectionCount / 3) per page, and
  * putting one above every section is the single most common AI tell. The
- * homepage budget is 3 across 9 sections and 2 are allocated.
+ * homepage budget is 4 across 10 sections and 3 are allocated.
  *
  * Colour is ink or muted, never the accent: yellow text on white measures
  * 1.10:1 and would be invisible. On a dark section the accent is fine, which

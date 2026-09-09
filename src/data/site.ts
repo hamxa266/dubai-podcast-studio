@@ -24,7 +24,7 @@ export const site = {
   email: "info@dubaipodcaststudio.com",
   phone: "+971 50 352 5271",
 
-  /** Entry rate, used as the mobile booking bar's price anchor. */
+  /** Entry rate. Anchors the price in the closing call to action. */
   fromRateAed: 350,
 } as const;
 
@@ -62,12 +62,22 @@ export const cta = {
  * H1, "DUBAI PODCAST STUDIO - BEST PODCAST STUDIO DUBAI HAS TO OFFER", which
  * runs to four lines on desktop and is a search query rather than a sentence.
  *
- * Between them the two lines carry all five things the first viewport has to
- * say: what the business is, where it is, that it does audio and video, that
- * the gear is serious, and that a person runs the session.
+ * The headline is a brand line rather than a descriptive one, which is a
+ * deliberate choice by the studio. It means the H1 no longer states what the
+ * business is or where it is, so the two facts it used to carry are load
+ * bearing elsewhere and must stay there:
+ *
+ *   "7 studios" and the Business Bay address -> CredibilityStrip, which sits
+ *                                               directly under the hero
+ *   "Podcast recording in Business Bay"      -> the page title and meta
+ *                                               description in app/layout.tsx
+ *
+ * Do not remove either without replacing the signal. The subtext still carries
+ * the rest: that it does audio and video, that the gear is serious, and that a
+ * person runs the session.
  */
 export const hero = {
-  headline: "seven podcast studios. one address in business bay.",
+  headline: "Record Something Worth Watching",
   subtext:
     "Professional audio and video recording with Shure SM7B microphones, 4K cameras and an operator on every session.",
 } as const;

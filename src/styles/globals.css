@@ -86,20 +86,25 @@
   --font-display: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
 
-  /* Floor is 38px, not 44px. Measured at 390px: 44px wrapped the hero
-     headline onto four lines, and a four-line hero headline is a
-     font-size error rather than a copy-length one. 38px lands it on
-     three, which is the realistic mobile target.
+  /* Both ends of this clamp are measured, not chosen.
 
-     Ceiling is 80px, not 88px, and that is also measured rather than
-     chosen. The headline balances onto two lines whose widest measures
-     11.4 times the font size, so 88px needs 1002px of column and 80px
-     needs 911px. At 1024px wide the hero column is 960px: 88px ran the
-     headline onto three lines through the whole 1024 to 1180 band,
-     which is a font-size error by the same argument as the mobile
-     floor above. 80px clears it with room at every desktop width, and
-     nothing below 971px changes at all, because the clamp does not
-     reach the old ceiling until then. */
+     Floor is 38px, not 44px, because 44px wrapped the hero headline
+     onto four lines at 390px, and a four-line hero headline is a
+     font-size error rather than a copy-length one.
+
+     Ceiling is 80px, not 88px. It was lowered when the headline was
+     the much longer "seven podcast studios. one address in business
+     bay.", which at 88px broke onto three lines through the whole
+     1024 to 1180 band. The current headline is short enough that 88px
+     would also fit, so this ceiling is now headroom rather than a
+     constraint. It is kept because 80px is a deliberate size the rest
+     of the scale is tuned against, not because the old limit still
+     binds.
+
+     Measured with the current headline, "Record Something Worth
+     Watching": one line at 1440px and above (it needs 1194px), two
+     lines from 320px to 1280px, three only at 320px. Every desktop
+     width is inside the two-line cap. */
   --text-hero: clamp(2.375rem, 0.75rem + 7vw, 5rem);
   --text-hero--line-height: 0.95;
   --text-hero--letter-spacing: -0.032em;
@@ -164,16 +169,14 @@
 }
 
 :root {
-  --dur-fast: 140ms;
   --dur-base: 240ms;
   --dur-slow: 520ms;
 
   /* Header height, capped at 80px by the nav rule. */
   --header-h: 64px;
 
-  /* Z-index scale. Four layers, documented. Never write an arbitrary
+  /* Z-index scale. Three layers, documented. Never write an arbitrary
      z-50 in a component. */
-  --z-sticky-cta: 40;
   --z-header: 50;
   --z-drawer: 60;
 
