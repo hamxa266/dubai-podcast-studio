@@ -1,0 +1,59 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# ---------------------------------------------------------------------------
+# Raw Google Maps scrape (source material, not build input)
+#
+# Excluded on purpose, for three reasons:
+#   1. ~27 MB of raw media that the build never reads. Everything the site
+#      actually uses has been processed into src/assets/images/, which IS
+#      committed.
+#   2. Provenance is unclear. Google Maps listings mix owner-uploaded and
+#      visitor-uploaded media, and the manifest does not distinguish them.
+#   3. One video (video_011) contains unrelated personal footage rather than
+#      studio content, and five files are corrupt.
+#
+# To version them anyway, delete these three lines.
+# ---------------------------------------------------------------------------
+/Photos/
+/Videos/
+/manifest.json

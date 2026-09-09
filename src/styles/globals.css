@@ -1,0 +1,383 @@
+@import "tailwindcss";
+
+/*
+  Dubai Podcast Studio - design tokens.
+
+  DIRECTION, revised. The first pass was a dark navy theme built on the
+  existing brand blue. That was rejected. This one is a light editorial system
+  in the DHNN mould: white ground, warm near-black ink, one electric accent
+  used as punctuation rather than fill, pill controls, very large low-weight
+  display type.
+
+  THE ONE RULE THAT MATTERS MOST
+  ------------------------------
+  Electric yellow on white measures 1.10:1. It is invisible.
+  The accent is a FILL ONLY. It is never text, never a border, never a focus
+  ring, never an icon on a light ground. Put ink on top of it and it measures
+  15.81:1. On the dark ink ground it flips: yellow as text there is 15.81:1
+  and perfectly legible.
+
+  Every ratio below is measured, not estimated.
+*/
+
+@theme {
+  /* ---------------------------------------------------------------
+     Colour
+
+     The default Tailwind palette is cleared. If `bg-red-500` does not
+     exist, nobody can reach for it, and the one-palette lock holds
+     without relying on code review.
+     --------------------------------------------------------------- */
+  --color-*: initial;
+
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-inherit: inherit;
+
+  /* Page ground. */
+  --color-paper: #ffffff;
+
+  /* Quiet alternate ground. ink 15.82:1, muted 4.64:1. */
+  --color-ash: #f4f4f4;
+
+  /* Primary type on light, and the ground of the dark full-bleed
+     sections. Warm near-black, not pure #000000. 17.40:1 on white. */
+  --color-ink: #1a1a1a;
+
+  /* Secondary type on light. 5.10:1 on white, 4.64:1 on ash.
+     Note: #7B7B7B, the value DHNN uses, measures 4.23:1 and fails AA.
+     This is two steps darker on purpose. */
+  --color-muted: #6e6e6e;
+
+  /* Secondary type on the dark ground. 6.90:1 on ink. */
+  --color-muted-dark: #a3a3a3;
+
+  /* Decorative hairline on light. Exempt from 3:1, which covers UI
+     component boundaries rather than ornamental dividers. */
+  --color-line: #e5e5e5;
+
+  /* Interactive boundary on light: input borders, outline buttons.
+     3.45:1, clears the 3:1 non-text minimum. */
+  --color-line-strong: #8a8a8a;
+
+  /* The same two roles on the dark ground. */
+  --color-line-dark: #3a3a3a;
+  --color-line-dark-strong: #666666;
+
+  /* THE ACCENT. Fill only on light. See the note at the top. */
+  --color-accent: #f2ff00;
+  --color-accent-hover: #dce800;
+
+  /* Label colour on an accent fill. 15.81:1. */
+  --color-accent-ink: #1a1a1a;
+
+  /* ---------------------------------------------------------------
+     Typography
+
+     One family across display and body, which is how the reference
+     does it. Switzer is a neo-grotesque, the closest free match to
+     DHNN's custom face.
+
+     Display weight is 400, not 700. Scale carries the impact; weight
+     would make it shout. This is the single biggest departure from
+     the first pass, which set display at 800.
+     --------------------------------------------------------------- */
+  --font-sans: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Floor is 38px, not 44px. Measured at 390px: 44px wrapped the hero
+     headline onto four lines, and a four-line hero headline is a
+     font-size error rather than a copy-length one. 38px lands it on
+     three, which is the realistic mobile target. */
+  --text-hero: clamp(2.375rem, 0.75rem + 7vw, 5.5rem);
+  --text-hero--line-height: 0.95;
+  --text-hero--letter-spacing: -0.032em;
+  --text-hero--font-weight: 400;
+
+  --text-title: clamp(2rem, 1rem + 4vw, 4rem);
+  --text-title--line-height: 0.98;
+  --text-title--letter-spacing: -0.028em;
+  --text-title--font-weight: 400;
+
+  /* Oversized single words, broken across lines. The reference does
+     this with "experi / ence" and "process / driven / design". */
+  --text-mega: clamp(3.5rem, 1rem + 13vw, 11rem);
+  --text-mega--line-height: 0.82;
+  --text-mega--letter-spacing: -0.045em;
+  --text-mega--font-weight: 400;
+
+  --text-subtitle: clamp(1.25rem, 1.05rem + 0.9vw, 1.75rem);
+  --text-subtitle--line-height: 1.15;
+  --text-subtitle--letter-spacing: -0.02em;
+  --text-subtitle--font-weight: 500;
+
+  --text-lead: clamp(1rem, 0.95rem + 0.4vw, 1.125rem);
+  --text-lead--line-height: 1.55;
+
+  /* 12px. Was 11px, which is small for uppercase mono at this tracking. */
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.14em;
+  --text-eyebrow--font-weight: 500;
+
+  /* ---------------------------------------------------------------
+     Layout
+     --------------------------------------------------------------- */
+  --container-shell: 1560px;
+  --container-measure: 62ch;
+
+  /* ---------------------------------------------------------------
+     Radius
+
+     Two values. Controls are pills, media and containers are sharp.
+     The reference uses rounded-full on 71 elements; that pill
+     language is most of what makes it read the way it does.
+     --------------------------------------------------------------- */
+  --radius-*: initial;
+  --radius-none: 0px;
+  --radius-pill: 9999px;
+  /* Multi-line fields cannot be pills without looking like a lozenge, so
+     they take half the 44px control height. That is exactly the corner
+     curvature of a pill at that size, so the two read as one family
+     rather than as an arbitrary third radius. */
+  --radius-field: 22px;
+
+  /* ---------------------------------------------------------------
+     Motion. MOTION_INTENSITY 9.
+     --------------------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  --default-transition-duration: 240ms;
+  --default-transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  --dur-fast: 140ms;
+  --dur-base: 240ms;
+  --dur-slow: 520ms;
+
+  /* Header height, capped at 80px by the nav rule. */
+  --header-h: 64px;
+
+  /* Z-index scale. Four layers, documented. Never write an arbitrary
+     z-50 in a component. */
+  --z-sticky-cta: 40;
+  --z-header: 50;
+  --z-drawer: 60;
+
+  color-scheme: light;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 76px;
+  }
+}
+
+@layer base {
+  html {
+    /* No scroll-behavior here. Lenis owns smooth scrolling, and having
+       both fight each other produces a stutter. */
+    scroll-padding-top: calc(var(--header-h) + 1.5rem);
+    -webkit-text-size-adjust: 100%;
+
+    /* The clip has to be on the ROOT, not just on body.
+
+       The mobile drawer parks off-screen with translate-x-full. It is
+       position:fixed, so its containing block is the viewport and a clip
+       on body never applied to it: on a 390px screen it sat at x=390 to
+       774 and gave the document a horizontal scroll.
+
+       Root overflow propagates to the viewport, which does clip fixed
+       descendants. `clip` rather than `hidden` because hidden would make
+       this a scroll container and break the sticky header. */
+    overflow-x: clip;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* The mobile drawer parks off-screen with translate-x-full, and a
+       fixed element still contributes to scrollable overflow, which
+       gave the page a horizontal scrollbar on mobile.
+
+       `clip`, not `hidden`: hidden would make the body a scroll
+       container and break the sticky header. clip does not. */
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Tabular figures wherever mono is used, so prices and hours line
+     up in a column. */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  /* One focus treatment site-wide. Ink, never accent: a yellow ring on
+     white measures 1.10:1 and would be invisible. */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* On the dark ground the ring flips to the accent, which measures
+     15.81:1 there. */
+  .on-ink :focus-visible,
+  .on-ink:focus-visible {
+    outline-color: var(--color-accent);
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@layer utilities {
+  .measure {
+    max-width: var(--container-measure);
+  }
+
+  /*
+    Hero entrance.
+
+    Deliberately CSS rather than GSAP. The hero is the LCP element, and
+    pulling a JS animation library into its critical path to fade some
+    text in would be a poor trade. A keyframe with an animation-delay
+    cascade costs nothing and runs on the compositor.
+
+    `both` fill mode matters: the element starts at opacity 0, so if the
+    animation never ran the content would be invisible. The global
+    reduced-motion rule shortens the duration to 0.01ms rather than
+    setting `animation: none`, so it always completes and always ends
+    visible.
+  */
+  .enter {
+    animation: enter-up 0.9s var(--ease-out-expo) both;
+  }
+
+  /*
+    Entrance for the LCP text.
+
+    Transform only, no opacity. Measured: the hero headline was the Largest
+    Contentful Paint element, and fading it from opacity 0 held LCP at 3.9s
+    with 88% of that in render delay and 0ms in load time. An element at
+    opacity 0 is not painted, so the fade was the bottleneck.
+
+    Moving it costs nothing: the text is on screen from the first frame and
+    still arrives with the same motion. Same reasoning as .enter-media, which
+    scales the hero image rather than fading it.
+  */
+  .enter-lcp {
+    animation: enter-rise 0.8s var(--ease-out-expo) both;
+  }
+
+  .enter-delay-1 {
+    animation-delay: 0.08s;
+  }
+  .enter-delay-2 {
+    animation-delay: 0.16s;
+  }
+  .enter-delay-3 {
+    animation-delay: 0.24s;
+  }
+
+  /*
+    The hero image scales, it does not fade.
+
+    Fading the LCP element in would push the Largest Contentful Paint
+    back by the length of the animation. A transform leaves paint timing
+    alone.
+  */
+  .enter-media {
+    animation: enter-scale 1.4s var(--ease-out-expo) both;
+  }
+
+  /* Marks a dark-ground region so nested focus rings and hairlines
+     switch to their dark-ground values. */
+  .on-ink {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+}
+
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes enter-rise {
+  from {
+    transform: translate3d(0, 0.75rem, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes enter-scale {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/*
+  Reduced motion.
+
+  At MOTION_INTENSITY 9 this is not a nicety, it is the difference
+  between a site that is usable and one that is not. This is the global
+  floor; the smooth-scroll provider and every choreographed component
+  also check the preference in their own logic, so they degrade to a
+  static, natively-scrolling page rather than a zero-length transition.
+*/
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
