@@ -12,6 +12,13 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored, unmodified third-party mechanism. It is ES5 by design and is
+    // never edited per project, so linting it to this project's rules would
+    // only produce noise we are not allowed to fix.
+    "src/vendor/**",
+    "public/sc/scrollcraft.js",
+    // scroll-craft workspace: planning artifacts and verification output.
+    "scrollcraft/**",
   ]),
 ]);
 

@@ -1,0 +1,1309 @@
+/*
+  Homepage styles. Imported by src/app/page.tsx only.
+
+  THEME. The scroll engine ships dark-leaning defaults. This project is one
+  light theme (CLAUDE.md section 3), so the tokens below re-point it at the
+  existing palette. Every colour here already exists in globals.css with a
+  measured contrast ratio.
+
+  MOTION. Everything that moves something across the screen (parallax, the
+  push-in, the rail, lifts on hover) is written for
+  `prefers-reduced-motion: no-preference` or switched off in the reduced block
+  at the bottom. Fades, colour changes and counters are kept for everyone.
+*/
+
+/*
+  The engine's stylesheet sets `body { background: var(--sc-canvas) }` with a
+  near-black default on :root, so the tokens land on :root and the ground is
+  re-asserted explicitly, or the page ends on a black band under the footer.
+*/
+:root {
+  --sc-canvas: #ffffff;
+  --sc-surface: #f4f4f4;
+  --sc-ink: #1a1a1a;
+  --sc-ink-soft: #6e6e6e;
+  --sc-accent: #f2ff00;
+  --sc-accent-ink: #1a1a1a;
+}
+
+body {
+  background-color: #ffffff;
+}
+
+.collection {
+  --sc-canvas: #ffffff;
+  --sc-surface: #f4f4f4;
+  --sc-ink: #1a1a1a;
+  --sc-ink-soft: #6e6e6e;
+  --sc-accent: #f2ff00;
+  --sc-accent-ink: #1a1a1a;
+
+  --sc-font-display: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+  --sc-font-text: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+  --sc-font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* The chapter index's margin, so sections can inset past it. */
+  --col-w: 0px;
+
+  background-color: #ffffff;
+}
+
+@media (min-width: 1024px) {
+  .collection {
+    --col-w: 6rem;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Grounds, and shared type.
+   --------------------------------------------------------------- */
+.g-paper { background-color: #ffffff; color: #1a1a1a; }
+.g-ash { background-color: #f4f4f4; color: #1a1a1a; }
+.g-ink { background-color: #1a1a1a; color: #ffffff; }
+
+.g-paper [data-sc-stage] { background-color: #ffffff; }
+.g-ash [data-sc-stage] { background-color: #f4f4f4; }
+.g-ink [data-sc-stage] { background-color: #1a1a1a; }
+
+/* Accent focus ring on the dark grounds, where it measures 15.81:1. */
+.g-ink :focus-visible,
+.rooms :focus-visible { outline-color: #f2ff00; }
+
+.ink-soft { color: #6e6e6e; }            /* 5.10:1 on paper, 4.64:1 on ash */
+.g-ink .ink-soft { color: #a3a3a3; }     /* 6.90:1 on ink */
+
+.wrap {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding-inline: calc(var(--col-w) + 1.25rem) 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .wrap { padding-inline: calc(var(--col-w) + 2rem) 2rem; }
+}
+
+.h2 {
+  font-size: clamp(1.75rem, 1.2rem + 1.9vw, 2.75rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.body-sm { font-size: 0.9375rem; line-height: 1.55; }
+
+.label__id {
+  font-family: var(--sc-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+.label__spec { font-size: 0.875rem; line-height: 1.5; }
+
+/* ---------------------------------------------------------------
+   Word-by-word headings (SplitText).
+   --------------------------------------------------------------- */
+
+/* The heading itself never fades or slides; its words do. This also covers
+   a heading that is a direct child of a [data-sc-stagger] parent. */
+.split[data-sc-in],
+[data-sc-stagger] > .split {
+  opacity: 1;
+  transform: none;
+}
+
+.split__w { display: inline-block; }
+
+/* The mask. Padding and a matching negative margin give descenders room
+   inside the clip without changing the line height. */
+.split--scroll .split__w {
+  overflow: clip;
+  padding: 0.08em 0 0.16em;
+  margin: -0.08em 0 -0.16em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .split--scroll .split__i {
+    display: inline-block;
+    transform: translate3d(0, 112%, 0);
+    transition: transform 950ms var(--ease);
+    transition-delay: calc(var(--i) * 45ms);
+  }
+  .split--scroll.sc-in .split__i { transform: none; }
+
+  /* The h1: transform only, never hidden, so LCP is untouched. */
+  .split--load .split__i {
+    display: inline-block;
+    animation: split-rise 1.05s var(--ease) both;
+    animation-delay: calc(100ms + var(--i) * 70ms);
+  }
+}
+
+@keyframes split-rise {
+  from { transform: translate3d(0, 0.5em, 0); }
+}
+
+/* Pictures wipe up out of a mask on the first paint. */
+@media (prefers-reduced-motion: no-preference) {
+  .enter-clip { animation: enter-clip 1.25s var(--ease) 0.45s both; }
+  .enter-clip--late { animation-delay: 0.7s; }
+}
+
+/* Ends outside the box so the outline and shadow are not cut off. */
+@keyframes enter-clip {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(-60px); }
+}
+
+.magnet { display: inline-block; }
+
+/* Camera viewfinder readout on the hero clip. Only shown while the clip is
+   actually playing, and the timecode is the clip's own playhead. */
+.rec {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.4rem;
+  font-family: var(--sc-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.rec:not([data-live]) { display: none; }
+
+.rec__dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 9999px;
+  background-color: #f2ff00;            /* the accent, as a fill, on dark */
+}
+
+.rec__tc {
+  display: none;
+  font-variant-numeric: tabular-nums;
+  color: #d4d4d4;
+}
+
+@media (min-width: 768px) {
+  .rec__tc { display: inline; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rec__dot { animation: rec-blink 1.2s steps(1, end) infinite; }
+}
+
+@keyframes rec-blink {
+  50% { opacity: 0.15; }
+}
+
+/* A video or image filling a positioned frame. */
+.fill-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------------------------------------------------------------
+   Overview. Three planes: the room behind an aperture, a still
+   in the middle distance, and the session clip in front.
+   --------------------------------------------------------------- */
+.hero {
+  position: relative;
+  overflow: clip;
+  padding: calc(var(--header-h) + 2.5rem) 0 4rem;
+}
+
+.hero__grid {
+  max-width: 88rem;
+  margin: 0 auto;
+  padding-inline: calc(var(--col-w) + 1.25rem) 1.25rem;
+  display: grid;
+  gap: 3rem;
+}
+
+@media (min-width: 768px) {
+  .hero__grid { padding-inline: calc(var(--col-w) + 2rem) 2rem; }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding-bottom: 3rem;
+  }
+  .hero__grid {
+    width: 100%;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: center;
+    gap: 3.5rem;
+  }
+}
+
+.hero__title {
+  font-size: clamp(2.5rem, 1.2rem + 4.2vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  font-weight: 400;
+  margin: 1.25rem 0 0;
+  max-width: 12ch;
+  text-wrap: balance;
+}
+
+.hero__lede {
+  margin: 1.5rem 0 0;
+  max-width: 40ch;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.hero__facts {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  gap: 1rem 2rem;
+  margin: 2.5rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.hero__facts dt {
+  font-family: var(--sc-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6e6e6e;
+}
+
+.hero__facts dd {
+  margin: 0.375rem 0 0;
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 479px) {
+  .hero__facts { grid-template-columns: 1fr 1fr; }
+}
+
+.hero__media {
+  position: relative;
+  padding: 1.5rem 1rem 2.5rem 2.25rem;
+}
+
+@media (min-width: 768px) {
+  .hero__media { padding: 2.5rem 2.5rem 3.5rem 3rem; }
+}
+
+.hero__aperture {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 5 / 4;
+  background-color: #e5e5e5;
+}
+
+/* Oversized so it can travel behind the aperture edge without exposing it. */
+.hero__plate {
+  position: absolute;
+  inset: -14% 0;
+}
+
+.hero__plate img { object-fit: cover; }
+
+.hero__still {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  width: clamp(5.5rem, 9vw, 8.5rem);
+  aspect-ratio: 3 / 4;
+}
+
+.hero__still-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  outline: 4px solid #ffffff;
+  box-shadow: 0 22px 50px -18px rgba(0, 0, 0, 0.45);
+}
+
+.hero__still-inner img { object-fit: cover; }
+
+.hero__clip {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 3;
+  width: clamp(6.5rem, 12vw, 11rem);
+  aspect-ratio: 9 / 16;
+}
+
+.hero__clip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.55);
+}
+
+/* ---------------------------------------------------------------
+   Numbers. The address leads; the figures support it.
+   --------------------------------------------------------------- */
+.numbers { padding: 6rem 0; }
+
+.numbers__lead {
+  margin-top: 1rem;
+  max-width: 26ch;
+  font-size: clamp(1.75rem, 1.1rem + 2.2vw, 3.25rem);
+}
+
+.numbers__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 3rem 0 0;
+  background-color: #dcdcdc;
+  border: 1px solid #dcdcdc;
+}
+
+@media (min-width: 900px) {
+  .numbers__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* dt comes first in the markup, as the spec requires, and is shown under
+   the figure. */
+.numbers__cell {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1.75rem 1.5rem;
+  background-color: #f4f4f4;
+}
+
+.numbers__cell dt { font-size: 0.875rem; }
+
+.numbers__cell dd {
+  margin: 0;
+  font-family: var(--sc-font-mono);
+  font-size: clamp(2.25rem, 1.4rem + 2.6vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.numbers__note { margin: 1.75rem 0 0; max-width: 62ch; line-height: 1.55; }
+
+/* ---------------------------------------------------------------
+   Setups. The rail.
+   --------------------------------------------------------------- */
+.rail {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  padding-inline: calc(var(--col-w) + 1.25rem) 1.25rem;
+  will-change: transform;
+}
+
+/* The rail passes under the chapter index. Clipping the stage at the index's
+   edge makes the margin behave like a margin instead of a label floating over
+   moving photographs. */
+@media (min-width: 1024px) {
+  #setups [data-sc-stage] { clip-path: inset(0 0 0 var(--col-w)); }
+}
+
+/* Centred in the space under the fixed header. A grid rather than flex on
+   the stage, so the rail keeps the stage's width and its items overflow it,
+   which is the travel the engine measures. */
+#setups [data-sc-stage] {
+  display: grid;
+  align-content: center;
+  padding-top: var(--header-h);
+}
+
+.rail__intro,
+.rail__note {
+  flex: 0 0 auto;
+  width: min(21rem, 70vw);
+  align-self: center;
+}
+
+.rail__item {
+  flex: 0 0 auto;
+  width: clamp(11rem, 21vw, 16rem);
+}
+
+.rail__frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 9 / 16;
+  background-color: #e5e5e5;
+  transition: box-shadow 500ms var(--ease);
+}
+
+.rail__frame img {
+  object-fit: cover;
+  transition: transform 900ms var(--ease);
+}
+
+.rail__num {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  font-family: var(--sc-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: #ffffff;
+  background-color: rgba(17, 17, 17, 0.72);
+}
+
+.rail__caption { margin: 0.875rem 0 0; }
+
+.rail__item:hover .rail__frame {
+  box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rail__item {
+    opacity: calc(0.55 + 0.45 * var(--sc-p, 1));
+    transition: opacity 260ms var(--ease), transform 600ms var(--ease);
+  }
+  .rail__item:hover { transform: translateY(-0.5rem); }
+  .rail__item:hover .rail__frame img { transform: scale(1.06); }
+}
+
+/* ---------------------------------------------------------------
+   Kit. The list holds still; the photograph drifts past it.
+   --------------------------------------------------------------- */
+.kit { padding: 4rem 0 6rem; overflow: clip; }
+
+/* The model names, sliding sideways as the section passes. A CSS
+   scroll-driven animation, so no script and no scroll listener. Where the
+   browser lacks it, or motion is reduced, the band simply sits still. */
+/* Starts after the chapter index, so the names never slide under its labels. */
+.ticker {
+  overflow: clip;
+  margin: 0 0 4rem var(--col-w);
+}
+
+.ticker__track {
+  display: flex;
+  gap: 0.6em;
+  width: max-content;
+  font-size: clamp(3rem, 1.6rem + 6vw, 8rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  color: #1a1a1a;
+}
+
+.ticker__outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px #1a1a1a;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ticker__track {
+      animation: ticker linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+/* The track is about 6,500px wide at 1440px, and the timeline is roughly one
+   viewport of scroll. -38% measured at 2,470px of travel, nearly three times
+   the scroll speed, which read as frantic. This is about half scroll speed. */
+@keyframes ticker {
+  from { transform: translate3d(1%, 0, 0); }
+  to { transform: translate3d(-8%, 0, 0); }
+}
+
+.kit__grid {
+  display: grid;
+  gap: 3.5rem;
+}
+
+@media (min-width: 900px) {
+  .kit__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 5rem;
+  }
+}
+
+.kit__list { margin: 2rem 0 0; }
+
+.kit__row {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem 0;
+  border-top: 1px solid #dcdcdc;
+}
+
+.kit__row dd { margin: 0; }
+
+@media (min-width: 640px) {
+  .kit__row { grid-template-columns: 9rem 1fr; gap: 1.5rem; align-items: baseline; }
+}
+
+.kit__media {
+  position: relative;
+  padding: 0 0 3rem 3rem;
+}
+
+.kit__photo {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background-color: #e5e5e5;
+}
+
+.kit__photo-plate {
+  position: absolute;
+  inset: -12% 0;
+}
+
+.kit__photo-plate img { object-fit: cover; }
+
+.kit__clip {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: clamp(7rem, 12vw, 10.5rem);
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------------------------------------------------------------
+   Inside. One room fills the frame and the camera pushes in.
+   --sc-p is the act's 0..1 progress, published by the engine.
+   --------------------------------------------------------------- */
+.inside {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #111111;
+}
+
+.inside__bg {
+  position: absolute;
+  inset: 0;
+  transform-origin: 56% 46%;
+  transform: scale(calc(1.02 + 0.18 * var(--sc-p, 0)));
+  will-change: transform;
+}
+
+.inside__bg img { object-fit: cover; }
+
+/* Weighted to where the copy sits, never a full-frame wash. */
+.inside__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(10, 10, 10, 0.92) 0%, rgba(10, 10, 10, 0.6) 40%, rgba(10, 10, 10, 0) 72%),
+    linear-gradient(to right, rgba(10, 10, 10, 0.35), rgba(10, 10, 10, 0) 55%);
+}
+
+.inside__clip {
+  position: absolute;
+  top: calc(var(--header-h) + 2rem);
+  right: clamp(1.25rem, 7vw, 7rem);
+  width: clamp(7rem, 13vw, 12.5rem);
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  background-color: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 40px 90px -20px rgba(0, 0, 0, 0.7);
+  transform: translate3d(0, calc((0.5 - var(--sc-p, 0.5)) * 18vh), 0);
+}
+
+.inside__copy {
+  position: absolute;
+  left: calc(var(--col-w) + 1.25rem);
+  right: 1.25rem;
+  bottom: 3rem;
+  max-width: 36rem;
+}
+
+@media (min-width: 768px) {
+  .inside__copy { left: calc(var(--col-w) + 2.5rem); bottom: 4rem; }
+}
+
+.inside__title {
+  margin: 0.75rem 0 0;
+  font-size: clamp(2rem, 1.2rem + 3vw, 3.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 400;
+  color: #ffffff;
+  text-wrap: balance;
+}
+
+.inside__body {
+  margin: 1rem 0 0;
+  max-width: 42ch;
+  color: #d4d4d4;
+  line-height: 1.55;
+}
+
+/* ---------------------------------------------------------------
+   Rates. Cards, then the prepaid blocks.
+   --------------------------------------------------------------- */
+.rates { padding: 6rem 0; }
+
+.tiers {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+@media (min-width: 900px) {
+  .tiers { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.tier {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  /* No transform in this list. The engine tilts the card by writing its
+     transform every frame, and a CSS transition on top of that would make
+     the tilt trail the pointer. Opacity stays for the staggered entrance. */
+  transition:
+    opacity 620ms var(--ease),
+    border-color 300ms var(--ease),
+    box-shadow 600ms var(--ease);
+}
+
+.tier:hover {
+  border-color: #1a1a1a;
+  box-shadow: 0 34px 70px -34px rgba(0, 0, 0, 0.38);
+}
+
+.tier__media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background-color: #e5e5e5;
+}
+
+.tier__media img {
+  object-fit: cover;
+  transition: transform 1000ms var(--ease);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tier:hover .tier__media img { transform: scale(1.06); }
+}
+
+.tier__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+}
+
+.tier__name {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.tier__rate {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.tier__figure {
+  font-family: var(--sc-font-mono);
+  font-size: clamp(2.25rem, 1.6rem + 1.6vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #1a1a1a;
+}
+
+.tier__body > .body-sm { margin: 0; }
+
+.tier__list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+}
+
+.tier__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.tier__list svg { flex: none; margin-top: 0.2rem; }
+
+.tier__fine {
+  margin: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid #efefef;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #6e6e6e;
+}
+
+.tier__fine:first-of-type { margin-top: auto; }
+
+.blocks {
+  display: grid;
+  gap: 1px;
+  margin-top: 3rem;
+  background-color: #e5e5e5;
+  border: 1px solid #e5e5e5;
+}
+
+@media (min-width: 640px) {
+  .blocks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .blocks__intro { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1024px) {
+  .blocks { grid-template-columns: 1.3fr repeat(3, minmax(0, 1fr)); }
+  .blocks__intro { grid-column: auto; }
+}
+
+.blocks > * {
+  padding: 1.5rem;
+  background-color: #ffffff;
+}
+
+.blocks__intro > .body-sm { margin-bottom: 0; }
+
+.block__price {
+  margin: 0.625rem 0 0.25rem;
+  font-family: var(--sc-font-mono);
+  font-size: clamp(1.75rem, 1.3rem + 1.1vw, 2.25rem);
+  letter-spacing: -0.02em;
+}
+
+.block__price span { font-size: 0.875rem; letter-spacing: 0; }
+
+.block > .body-sm { margin: 0; }
+
+.rates__foot {
+  display: grid;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+@media (min-width: 900px) {
+  .rates__foot { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+}
+
+.rates__terms {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 62ch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------------------------------------------------------------
+   Rooms. A photograph behind the directory that follows the row
+   under the pointer or the keyboard focus. CSS only, via :has().
+   --------------------------------------------------------------- */
+.rooms {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 6.5rem 0;
+  color: #ffffff;
+  background-color: #111111;
+}
+
+.rooms__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+@media (min-width: 1024px) {
+  .rooms__media { left: 38%; }
+}
+
+/* A slow drift, so the photograph is never quite still while you read. */
+@media (prefers-reduced-motion: no-preference) {
+  .rooms__media { animation: rooms-drift 24s ease-in-out infinite alternate; }
+}
+
+@keyframes rooms-drift {
+  from { transform: scale(1); }
+  to { transform: scale(1.07) translate3d(-1.5%, 0, 0); }
+}
+
+.rooms__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 700ms var(--ease);
+}
+
+.rooms__bg-inner {
+  position: absolute;
+  inset: 0;
+}
+
+.rooms__bg img {
+  object-fit: cover;
+  transform: scale(1.1);
+  transition: transform 1400ms var(--ease);
+}
+
+/* Resting state: the first photograph. */
+.rooms__bg[data-i="0"] { opacity: 1; }
+.rooms__bg[data-i="0"] img { transform: scale(1); }
+
+.rooms:has(.room:hover, .room:focus-visible) .rooms__bg[data-i="0"] { opacity: 0; }
+.rooms:has(.room:hover, .room:focus-visible) .rooms__bg[data-i="0"] img { transform: scale(1.1); }
+
+.rooms:has(.room[data-i="0"]:hover, .room[data-i="0"]:focus-visible) .rooms__bg[data-i="0"],
+.rooms:has(.room[data-i="1"]:hover, .room[data-i="1"]:focus-visible) .rooms__bg[data-i="1"],
+.rooms:has(.room[data-i="2"]:hover, .room[data-i="2"]:focus-visible) .rooms__bg[data-i="2"],
+.rooms:has(.room[data-i="3"]:hover, .room[data-i="3"]:focus-visible) .rooms__bg[data-i="3"],
+.rooms:has(.room[data-i="4"]:hover, .room[data-i="4"]:focus-visible) .rooms__bg[data-i="4"],
+.rooms:has(.room[data-i="5"]:hover, .room[data-i="5"]:focus-visible) .rooms__bg[data-i="5"],
+.rooms:has(.room[data-i="6"]:hover, .room[data-i="6"]:focus-visible) .rooms__bg[data-i="6"] {
+  opacity: 1;
+}
+
+.rooms:has(.room[data-i="0"]:hover, .room[data-i="0"]:focus-visible) .rooms__bg[data-i="0"] img,
+.rooms:has(.room[data-i="1"]:hover, .room[data-i="1"]:focus-visible) .rooms__bg[data-i="1"] img,
+.rooms:has(.room[data-i="2"]:hover, .room[data-i="2"]:focus-visible) .rooms__bg[data-i="2"] img,
+.rooms:has(.room[data-i="3"]:hover, .room[data-i="3"]:focus-visible) .rooms__bg[data-i="3"] img,
+.rooms:has(.room[data-i="4"]:hover, .room[data-i="4"]:focus-visible) .rooms__bg[data-i="4"] img,
+.rooms:has(.room[data-i="5"]:hover, .room[data-i="5"]:focus-visible) .rooms__bg[data-i="5"] img,
+.rooms:has(.room[data-i="6"]:hover, .room[data-i="6"]:focus-visible) .rooms__bg[data-i="6"] img {
+  transform: scale(1);
+}
+
+/* Solid behind the list, open over the photograph. On a phone the whole
+   section is text over image, so the shade is even and heavier. */
+.rooms__shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.8);
+}
+
+@media (min-width: 1024px) {
+  .rooms__shade {
+    background:
+      linear-gradient(to right, #111111 0%, rgba(17, 17, 17, 0.55) 30%, rgba(17, 17, 17, 0.08) 100%),
+      linear-gradient(to top, rgba(17, 17, 17, 0.6), rgba(17, 17, 17, 0) 35%);
+  }
+}
+
+.rooms__inner { position: relative; }
+
+.rooms__list {
+  max-width: 38rem;
+  margin: 2.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.room {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "office office"
+    "name state";
+  align-items: center;
+  gap: 0.25rem 1rem;
+  padding: 1.125rem 0.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  text-decoration: none;
+  transition: transform 500ms var(--ease);
+}
+
+@media (min-width: 640px) {
+  .room {
+    grid-template-columns: 7rem minmax(0, 1fr) auto auto;
+    grid-template-areas: "office name state arrow";
+  }
+}
+
+.room__office {
+  grid-area: office;
+  font-family: var(--sc-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #a3a3a3;
+}
+
+.room__name {
+  grid-area: name;
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  transition: color 300ms var(--ease);
+}
+
+.room__state {
+  grid-area: state;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  transition:
+    background-color 300ms var(--ease),
+    border-color 300ms var(--ease),
+    color 300ms var(--ease);
+}
+
+.room__arrow {
+  display: none;
+  grid-area: arrow;
+  transition: transform 500ms var(--ease);
+}
+
+@media (min-width: 640px) {
+  .room__arrow { display: block; }
+}
+
+/* The row under the pointer comes forward; the rest step back in colour,
+   not opacity, so every row keeps its measured contrast. */
+.rooms__list:has(.room:hover, .room:focus-visible) .room:not(:hover, :focus-visible) .room__name {
+  color: #8f8f8f;                       /* 5.95:1 on #111 */
+}
+
+.room:hover .room__state,
+.room:focus-visible .room__state {
+  color: #1a1a1a;
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+
+.room:hover .room__state[data-online],
+.room:focus-visible .room__state[data-online] {
+  background-color: #f2ff00;            /* accent as a fill, ink on it 15.81:1 */
+  border-color: #f2ff00;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .room:hover,
+  .room:focus-visible { transform: translateX(0.875rem); }
+  .room:hover .room__arrow,
+  .room:focus-visible .room__arrow { transform: translate(3px, -3px); }
+}
+
+.rooms__note {
+  display: inline-block;
+  margin: 2rem 0 0;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.75rem;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+@media (min-width: 1024px) {
+  .rooms__note {
+    position: absolute;
+    right: 2rem;
+    bottom: -3.5rem;
+    margin: 0;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Book. The close.
+   --------------------------------------------------------------- */
+.plate-section {
+  min-height: 78vh;
+  display: grid;
+  align-items: end;
+}
+
+.plate {
+  display: grid;
+  place-items: end start;
+  padding: 3rem 1.25rem 7rem;
+}
+
+.plate__inner {
+  width: 100%;
+  max-width: 46rem;
+  padding-left: var(--col-w);
+}
+
+.plate__claim {
+  margin: 0;
+  font-size: clamp(2rem, 1rem + 4.2vw, 4.25rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+.plate__rule {
+  height: 1px;
+  margin: 2rem 0 1.5rem;
+  background-color: #3a3a3a;
+}
+
+.plate__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+/* ---------------------------------------------------------------
+   The chapter index, in the left margin at 1024px and up.
+   --------------------------------------------------------------- */
+.toc { display: none; }
+
+@media (min-width: 1024px) {
+  .toc {
+    position: fixed;
+    top: calc(var(--header-h) + 2rem);
+    left: 1.5rem;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 5.75rem;
+  }
+}
+
+.toc__rail { position: relative; }
+
+.toc__rail::before,
+.toc__fill {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+}
+
+.toc__rail::before { bottom: 0; background-color: #e5e5e5; }
+
+.toc__fill {
+  height: 0;
+  background-color: #1a1a1a;
+  transition: height 500ms var(--ease);
+}
+
+.toc__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc__link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3125rem 0;
+  font-size: 0.75rem;
+  color: #6e6e6e;                       /* 5.10:1 on paper */
+  text-decoration: none;
+  transition: color 250ms var(--ease);
+}
+
+.toc__tick {
+  width: 0.5rem;
+  height: 1px;
+  background-color: currentColor;
+  transition: width 300ms var(--ease);
+}
+
+.toc__link:hover { color: #1a1a1a; }
+
+.toc__link[aria-current] {
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+.toc__link[aria-current] .toc__tick { width: 1rem; }
+
+.toc__status {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: #1a1a1a;
+}
+
+.toc__detail { color: #6e6e6e; }
+
+.toc__dot {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: 0.25rem;
+  border-radius: 9999px;
+  background-color: #b4b4b4;
+}
+
+/* Accent as a fill with an ink ring: the dot is never yellow on white alone. */
+.toc__status[data-open] .toc__dot {
+  background-color: #f2ff00;
+  box-shadow: 0 0 0 1px #1a1a1a;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toc__status[data-open] .toc__dot { animation: toc-pulse 2.4s var(--ease) infinite; }
+}
+
+@keyframes toc-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px #1a1a1a, 0 0 0 0 rgba(242, 255, 0, 0.55); }
+  60% { box-shadow: 0 0 0 1px #1a1a1a, 0 0 0 6px rgba(242, 255, 0, 0); }
+}
+
+/* Over a dark section it inverts rather than vanishing. This is a margin
+   element sitting on top of a dark section, not the chrome inverting. */
+.toc[data-over="ink"] .toc__rail::before { background-color: #3a3a3a; }
+.toc[data-over="ink"] .toc__fill { background-color: #f2ff00; }
+.toc[data-over="ink"] .toc__link { color: #a3a3a3; }
+.toc[data-over="ink"] .toc__link:hover,
+.toc[data-over="ink"] .toc__link[aria-current] { color: #ffffff; }
+.toc[data-over="ink"] .toc__status { color: #ffffff; }
+.toc[data-over="ink"] .toc__detail { color: #a3a3a3; }
+.toc[data-over="ink"] .toc__status[data-open] .toc__dot { box-shadow: 0 0 0 1px #ffffff; }
+
+/* ---------------------------------------------------------------
+   Reduced motion.
+
+   Windows sets this whenever "Animation effects" is off, so this is
+   what a lot of real visitors see, and it has to be a good page in its
+   own right rather than the animated page with the motion deleted.
+
+   - Pinned sections collapse to their natural height. Holding a still
+     frame for several screens of scrolling is the worst of both.
+   - The sideways rail becomes a grid.
+   - Parallax, the push-in and hover lifts are off.
+   - Fades are restored. globals.css sets every transition to 0.01ms
+     under this setting, which also killed the opacity fades; a fade
+     moves nothing, so it comes back here.
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .collection [data-sc-act] { height: auto !important; }
+
+  .collection .sc-stage,
+  .collection [data-sc-stage] {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+    clip-path: none !important;
+  }
+
+  .collection .inside-stage { height: min(100svh, 56rem) !important; }
+
+  .collection [data-sc-cue] { opacity: 1 !important; transform: none !important; }
+  .collection [data-sc-parallax],
+  .inside__bg,
+  .inside__clip,
+  .rooms__bg img { transform: none !important; }
+
+  .rail {
+    display: grid !important;
+    /* Fixed counts that divide the eight setups evenly. auto-fill gave seven
+       columns at 1440px and left the eighth alone on a second row. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1.25rem;
+    padding-block: 5rem;
+    transform: none !important;
+  }
+
+  .rail__intro,
+  .rail__note {
+    grid-column: 1 / -1;
+    width: auto;
+    max-width: 40rem;
+  }
+
+  .rail__item { width: auto; }
+
+  @media (min-width: 768px) {
+    .rail { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  /* Headings fade in word by word instead of rising. */
+  .split--scroll .split__i {
+    opacity: 0;
+    transition-property: opacity !important;
+    transition-duration: 550ms !important;
+    transition-delay: calc(var(--i) * 55ms) !important;
+  }
+  .split--scroll.sc-in .split__i { opacity: 1; }
+
+  .collection [data-sc-in],
+  .collection [data-sc-stagger] > *,
+  .rooms__bg,
+  .room__name,
+  .room__state,
+  .toc__link,
+  .tier {
+    transition-duration: 450ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Giving links and buttons their own colour back.
+
+   The engine's stylesheet is unlayered and carries
+   `:where(a) { color: inherit }` and the same for buttons. Tailwind v4
+   emits utilities inside `@layer utilities`, and an unlayered rule beats
+   a layered one regardless of specificity, so every Button on this page
+   inherited the section colour: "Book Now" rendered white on yellow at
+   1.10:1. `revert-layer` rolls the property back to what the layers
+   would have set. Scoped to the element, not .collection, because the
+   engine stylesheet also reaches the header and the mobile drawer.
+   --------------------------------------------------------------- */
+a,
+button {
+  color: revert-layer;
+}

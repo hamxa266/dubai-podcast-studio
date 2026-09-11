@@ -57,3 +57,7 @@ next-env.d.ts
 /Photos/
 /Videos/
 /manifest.json
+
+# scroll-craft workspace: planning artifacts, generated derivatives, verification shots.
+# The shipped page lives in src/. Nothing here is needed to build the site.
+/scrollcraft/
